@@ -11,8 +11,7 @@ class ApiClient {
   );
 
   static Future<YuGiOh?> getCardInfo({
-    required int count,
-    required int offset,
+    required int page,
   }) async {
     try {
       Response<Map<String, dynamic>> _response;
@@ -21,7 +20,7 @@ class ApiClient {
         queryParameters: <String, dynamic>{
           'api_key': '9618b5cf6ae9661f92fff553c697bed4',
           'language': 'en-US',
-          'page': 1
+          'page': page
         },
       );
       //https://api.themoviedb.org/3/movie/top_rated?api_key=9618b5cf6ae9661f92fff553c697bed4&language=en-US&page=1

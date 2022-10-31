@@ -18,7 +18,7 @@ class YuGiOh {
       data: List<TopRatedMovieModel>.from(json["results"].map((x) {
         return TopRatedMovieModel.fromMap(x);
       })),
-      // meta: Meta.fromMap(json["page"]),
+      meta: Meta.fromMap(json),
     );
   }
 }
@@ -80,53 +80,25 @@ class TopRatedMovieModel {
 }
 
 class Meta {
-  Meta({
-    this.currentRows,
-    this.totalRows,
-    this.rowsRemaining,
-    this.totalPages,
-    this.pagesRemaining,
-    this.nextPage,
-    this.nextPageOffset,
-  });
+  int? page;
+  int? total_pages;
+  int? total_results;
 
-  int? currentRows;
-  int? totalRows;
-  int? rowsRemaining;
-  int? totalPages;
-  int? pagesRemaining;
-  String? nextPage;
-  int? nextPageOffset;
+  Meta({
+    this.page,
+    this.total_pages,
+    this.total_results,
+  });
 
   factory Meta.fromJson(String str) {
     return Meta.fromMap(json.decode(str));
   }
 
-  String toJson() {
-    return json.encode(toMap());
-  }
-
   factory Meta.fromMap(Map<String, dynamic> json) {
     return Meta(
-      currentRows: json["current_rows"],
-      totalRows: json["total_rows"],
-      rowsRemaining: json["rows_remaining"],
-      totalPages: json["total_pages"],
-      pagesRemaining: json["pages_remaining"],
-      nextPage: json["next_page"],
-      nextPageOffset: json["next_page_offset"],
+      page: json["page"],
+      total_pages: json["total_pages"],
+      total_results: json["total_results"],
     );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      "current_rows": currentRows,
-      "total_rows": totalRows,
-      "rows_remaining": rowsRemaining,
-      "total_pages": totalPages,
-      "pages_remaining": pagesRemaining,
-      "next_page": nextPage,
-      "next_page_offset": nextPageOffset,
-    };
   }
 }
