@@ -6,6 +6,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:surge_global/list_provider.dart';
 import '../../../model/yu_gi_oh.dart';
 import '../../../network/api_client.dart';
+import '../../model/tob_rated_movie_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   final int _count = 50;
   final ScrollController _controller = ScrollController();
   int _page = 1;
-  YuGiOh? _yuGiOh;
+  TopRatedMovies? _topRatedMovies;
   double height = 0;
   double width = 0;
   var Items;
@@ -431,18 +432,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _requestNewData() async {
-    _yuGiOh = await ApiClient.getCardInfo(
+    _topRatedMovies = await ApiClient.getCardInfo(
       page: _page,
     );
-    if (_yuGiOh != null) {
-      int totol_page = _yuGiOh!.meta?.total_pages ?? 1;
+    if (_topRatedMovies != null) {
+      int totol_page = _topRatedMovies!.meta?.total_pages ?? 1;
       if (totol_page > _page) {
         _page++;
       }
-      Items.getAllMovies(_yuGiOh!.data);
+      Items.getAllMovies(_topRatedMovies!.data);
       _refreshController.refreshCompleted();
-
-      /// Items._listData.addAll(_yuGiOh!.data);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

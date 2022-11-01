@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:surge_global/model/yu_gi_oh.dart';
+import 'model/tob_rated_movie_model.dart';
 
 class TopRatedMoviesProvider with ChangeNotifier {
   bool isLoading = true;
