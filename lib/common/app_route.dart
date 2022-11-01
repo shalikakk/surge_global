@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import '../list_provider.dart';
+import '../provider/list_provider.dart';
 import '../ui/home/home_page.dart';
 
 class AppRoute {

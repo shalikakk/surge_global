@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:surge_global/list_provider.dart';
-import '../../../model/yu_gi_oh.dart';
+import 'package:surge_global/enums/connectivity_status.dart';
+import 'package:surge_global/provider/list_provider.dart';
+import '../../../model/TopRatedMovies.dart';
 import '../../../network/api_client.dart';
 import '../../model/tob_rated_movie_model.dart';
 
@@ -16,7 +18,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final int _count = 50;
   final ScrollController _controller = ScrollController();
   int _page = 1;
   TopRatedMovies? _topRatedMovies;
@@ -31,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     Items = Provider.of<TopRatedMoviesProvider>(context, listen: false);
-    _requestNewData();
+    _requestNewMovies();
     _controller.addListener(_onScroll);
   }
 
@@ -70,21 +71,42 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  //set percentage
   double percentage(double populate) {
     populate = populate * 0.01;
     if (populate > 1) return 1;
     return populate;
   }
 
+  //set center text
   String centerText(double populate) {
     if (populate > 100) return "100%";
     return populate.toString().split('.').first + "%";
+  }
+
+  //show toast
+  void showToastMessage(String message, Color color) {
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: color,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
+
+    // check network Connection
+    var connectionStatus = Provider.of<ConnectivityStatus>(context);
+    if (connectionStatus == ConnectivityStatus.offline) {
+      showToastMessage("No Internet Connection", Colors.redAccent);
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xffb032541),
@@ -106,7 +128,7 @@ class _HomePageState extends State<HomePage> {
 
               return SmartRefresher(
                 controller: _refreshController,
-                onRefresh: _requestNewData,
+                onRefresh: _requestNewMovies,
                 child: ListView.builder(
                   controller: _controller,
                   physics: const BouncingScrollPhysics(),
@@ -427,11 +449,11 @@ class _HomePageState extends State<HomePage> {
   _onScroll() {
     if (_controller.offset >= _controller.position.maxScrollExtent &&
         !_controller.position.outOfRange) {
-      _requestNewData();
+      _requestNewMovies();
     }
   }
 
-  Future<void> _requestNewData() async {
+  Future<void> _requestNewMovies() async {
     _topRatedMovies = await ApiClient.getCardInfo(
       page: _page,
     );
@@ -445,7 +467,7 @@ class _HomePageState extends State<HomePage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Oops! Something went wrong...'),
+          content: Text('Something went wrong..'),
         ),
       );
     }

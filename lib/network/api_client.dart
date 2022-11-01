@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:surge_global/network/api_key.dart';
 
 import '../common/constant.dart';
-import '../model/yu_gi_oh.dart';
+import '../model/TopRatedMovies.dart';
 
 class ApiClient {
   static final Dio _dio = Dio(
